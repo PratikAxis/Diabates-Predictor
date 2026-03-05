@@ -1,47 +1,16 @@
 import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-from sklearn.preprocessing import StandardScaler
 
-# ----- Preprocessing -----
-df = pd.read_csv("dataset/framingham.csv")
-print(df.columns)
-print(df.shape)
+def preprocessing():
+    csv_path = '/home/pratik/ML and DL projects/Diabetes predictor/Data/raw.csv'
+    
+    df = pd.read_csv(csv_path)
+    df = df.drop(['education'], axis=1)
 
-df = df.drop(['education'], axis=1)
-print(df.isnull().sum())
+    for col in ['cigsPerDay', 'BPMeds', 'totChol', 'BMI', 'glucose', 'heartRate']:
+        df[col] = df[col].fillna(df[col].mean())
 
-# Fill missing values with column means
-df['cigsPerDay'] = df['cigsPerDay'].fillna(np.mean(df['cigsPerDay']))
-df['BPMeds'] = df['BPMeds'].fillna(np.mean(df['BPMeds']))
-df['totChol'] = df['totChol'].fillna(np.mean(df['totChol']))
-df['BMI'] = df['BMI'].fillna(np.mean(df['BMI']))
-df['glucose'] = df['glucose'].fillna(np.mean(df['glucose']))
-df['heartRate'] = df['heartRate'].fillna(np.mean(df['heartRate']))
+    df = df[df['totChol'] < 450]
 
-print(df.isnull().sum())
-
-# Remove extreme cholesterol values
-df = df[df['totChol'] < 450]
-
-X = df.drop(['diabetes'], axis=1)
-y = df['diabetes']
-
-# ----- Visualization -----
-
-plt.xlabel('Independent variable')
-plt.ylabel('Dependent variable')
-for col in X.columns:
-    plt.scatter(df[col], y, label=col)
-plt.legend()
-plt.show()
-
-plt.figure(figsize=(12, 10))
-sns.heatmap(df.corr(), annot=True, cmap='coolwarm', fmt='.2f')
-plt.title("Correlation between Medical Factors")
-plt.show()
-
-plt.boxplot(df)
-plt.show()
-
+    X = df.drop(['diabetes'], axis=1)
+    y = df['diabetes']
+    return df, X, y

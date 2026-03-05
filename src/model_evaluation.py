@@ -1,14 +1,15 @@
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
-from src.model_training import lr_model, X_test, y_pred, y_test
+# src/model_evaluation.py
+from model_training import lr_model, scaler, X_test, y_test
+from sklearn.metrics import classification_report, accuracy_score
 
-def main():
+def evaluation():
+    X_test_scaled = scaler.transform(X_test)
+    
+    y_pred = lr_model.predict(X_test_scaled)
 
-    y_pred = lr_model.predict(X_test)
-
-    print("Obtained Accuracy:", accuracy_score(y_pred, y_test))
-    print("\nConfusion Matrix:\n", confusion_matrix(y_pred, y_test))
-    print("\nOverall Model Report:\n", classification_report(y_pred, y_test))
+    print("Obtained Accuracy:", accuracy_score(y_test, y_pred))
+    print("\nOverall Model Report:\n", classification_report(y_test, y_pred))
 
 if __name__ == "__main__":
-    main()
+    evaluation()
 
